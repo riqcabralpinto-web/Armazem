@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full bg-slate-50">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Armazém Brindes - Brindes Promocionais e Personalizados</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Estilos Customizados Externos -->
+  <link rel="stylesheet" href="style.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            navy: {
+              800: '#1e2d4a',
+              900: '#17233b',
+              950: '#0f1828',
+            },
+            brandRed: {
+              600: '#bd2b2b',
+              700: '#a32222',
+              800: '#881b1b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="flex flex-col min-h-screen text-slate-800 antialiased font-sans selection:bg-brandRed-600 selection:text-white">
+
+  <!-- TOP BAR (NAVY BLUE) -->
+  <header class="sticky top-0 z-40 shadow-md">
+    <div class="bg-navy-900 text-white border-b border-navy-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap items-center justify-between gap-4">
+        
+        <!-- Left: Email Contact -->
+        <a href="mailto:armazembrindes@uol.com.br" class="flex items-center gap-2.5 text-xs sm:text-sm text-slate-200 hover:text-white transition-colors group">
+          <span class="p-1.5 rounded-full bg-navy-800 group-hover:bg-brandRed-600 transition-colors">
+            <i class="fa-regular fa-envelope text-white"></i>
+          </span>
+          <span class="font-medium tracking-wide">armazembrindes@uol.com.br</span>
+        </a>
+
+        <!-- Center: Brand Logo -->
+        <div class="flex items-center justify-center">
+          <a href="#" onclick="filterByCategory('all'); return false;" class="bg-white px-4 py-1.5 rounded shadow-inner flex items-center gap-2 transform hover:scale-105 transition-transform">
+            <svg class="h-8 w-auto" viewBox="0 0 120 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M45 10 L20 60 H35 L42 45 H58 L65 60 H80 L55 10 H45 Z" fill="#17233b"/>
+              <path d="M46 35 L50 24 L54 35 H46 Z" fill="#ffffff"/>
+              <path d="M15 52 L85 52" stroke="#bd2b2b" stroke-width="5" stroke-linecap="round"/>
+              <path d="M25 60 L75 60" stroke="#17233b" stroke-width="4" stroke-linecap="round"/>
+            </svg>
+            <div class="flex flex-col">
+              <span class="text-xs font-black tracking-widest text-navy-900 leading-none">ARMAZÉM</span>
+              <span class="text-[10px] font-bold tracking-wider text-brandRed-600 leading-tight">BRINDES</span>
+            </div>
+          </a>
+        </div>
+
+        <!-- Right: Contact Phones -->
+        <div class="flex items-center gap-4 text-xs sm:text-sm">
+          <a href="https://wa.me/5511990053546" target="_blank" class="flex items-center gap-2 text-emerald-400 hover:text-emerald-300 font-semibold transition-colors bg-navy-800/80 px-3 py-1.5 rounded-full border border-emerald-500/20">
+            <i class="fa-brands fa-whatsapp text-base"></i>
+            <span>(11) 99005-3546</span>
+          </a>
+          <a href="tel:1131046595" class="hidden md:flex items-center gap-2 text-slate-200 hover:text-white transition-colors">
+            <i class="fa-solid fa-phone text-slate-400"></i>
+            <span>(11) 3104-6595</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MAIN NAV & SEARCH BAR (CRIMSON RED) -->
+    <nav class="bg-brandRed-600 text-white border-t border-brandRed-700 shadow-lg">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between gap-3 md:gap-6">
+        
+        <!-- Left: Sidebar Toggle & Search Input -->
+        <div class="flex items-center gap-2 sm:gap-3 flex-1 max-w-md">
+          <button id="toggleFilterBtn" onclick="toggleSidebar()" class="p-2 rounded-lg hover:bg-brandRed-700 active:bg-brandRed-800 text-white transition-colors flex items-center gap-1.5 font-medium text-sm" title="Filtrar produtos">
+            <i class="fa-solid fa-filter text-lg"></i>
+            <span class="hidden sm:inline text-xs font-semibold uppercase tracking-wider">Filtros</span>
+          </button>
+
+          <div class="relative w-full">
+            <input 
+              type="text" 
+              id="searchInput" 
+              placeholder="Procurar produtos, brindes..." 
+              oninput="handleSearch()"
+              class="w-full bg-white text-slate-800 text-sm rounded-full pl-9 pr-4 py-1.5 focus:outline-none focus:ring-2 focus:ring-navy-900 shadow-inner placeholder-slate-400"
+            >
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+            <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+              <i class="fa-solid fa-xmark text-xs"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Center: Category Nav Links -->
+        <div class="hidden md:flex items-center gap-1 lg:gap-2">
+          <button onclick="filterByCategory('all')" class="cat-btn active font-semibold text-sm px-3 py-1.5 rounded-md hover:bg-brandRed-700 transition-all text-white border border-transparent" data-cat="all">
+            Todos
+          </button>
+          <button onclick="filterByCategory('Folhinhas')" class="cat-btn font-semibold text-sm px-3 py-1.5 rounded-md hover:bg-brandRed-700 transition-all text-white/90 hover:text-white" data-cat="Folhinhas">
+            Folhinhas
+          </button>
+          <button onclick="filterByCategory('Brindes')" class="cat-btn font-semibold text-sm px-3 py-1.5 rounded-md hover:bg-brandRed-700 transition-all text-white/90 hover:text-white" data-cat="Brindes">
+            Brindes
+          </button>
+          <button onclick="filterByCategory('Sacolas')" class="cat-btn font-semibold text-sm px-3 py-1.5 rounded-md hover:bg-brandRed-700 transition-all text-white/90 hover:text-white" data-cat="Sacolas">
+            Sacolas
+          </button>
+          <button onclick="filterByCategory('Caixas')" class="cat-btn font-semibold text-sm px-3 py-1.5 rounded-md hover:bg-brandRed-700 transition-all text-white/90 hover:text-white" data-cat="Caixas">
+            Caixas
+          </button>
+        </div>
+
+        <!-- Right: Shopping Cart Icon Button -->
+        <button onclick="toggleCartDrawer()" class="relative p-2 rounded-lg hover:bg-brandRed-700 transition-colors flex items-center justify-center text-white group" aria-label="Carrinho de Compras">
+          <i class="fa-solid fa-cart-shopping text-xl sm:text-2xl group-hover:scale-110 transition-transform"></i>
+          <span id="cartBadge" class="absolute -top-1 -right-1 bg-navy-900 text-white text-[11px] font-bold h-5 w-5 rounded-full flex items-center justify-center border-2 border-brandRed-600 shadow-sm scale-0 transition-transform">
+            0
+          </span>
+        </button>
+
+      </div>
+
+      <!-- Mobile Categories Bar -->
+      <div class="md:hidden flex items-center justify-around bg-brandRed-700/80 px-2 py-1.5 text-xs overflow-x-auto whitespace-nowrap border-t border-brandRed-800">
+        <button onclick="filterByCategory('all')" class="cat-btn font-medium px-2.5 py-1 rounded text-white" data-cat="all">Todos</button>
+        <button onclick="filterByCategory('Folhinhas')" class="cat-btn font-medium px-2.5 py-1 rounded text-white/80" data-cat="Folhinhas">Folhinhas</button>
+        <button onclick="filterByCategory('Brindes')" class="cat-btn font-medium px-2.5 py-1 rounded text-white/80" data-cat="Brindes">Brindes</button>
+        <button onclick="filterByCategory('Sacolas')" class="cat-btn font-medium px-2.5 py-1 rounded text-white/80" data-cat="Sacolas">Sacolas</button>
+        <button onclick="filterByCategory('Caixas')" class="cat-btn font-medium px-2.5 py-1 rounded text-white/80" data-cat="Caixas">Caixas</button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- MAIN LAYOUT WRAPPER -->
+  <div class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex gap-6">
+
+    <!-- SIDEBAR FILTER PANEL -->
+    <aside id="sidebarFilter" class="w-64 flex-shrink-0 hidden lg:block transition-all duration-300">
+      <div class="bg-white rounded-xl p-5 border border-slate-200/80 shadow-sm sticky top-28 space-y-6">
+        
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <h3 class="font-bold text-navy-900 text-base flex items-center gap-2">
+            <i class="fa-solid fa-sliders text-brandRed-600"></i>
+            Filtros
+          </h3>
+          <button onclick="resetFilters()" class="text-xs font-semibold text-brandRed-600 hover:text-brandRed-800 hover:underline">
+            Limpar
+          </button>
+        </div>
+
+        <!-- Price Range Filter -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label class="text-xs font-bold text-slate-700 uppercase tracking-wider">Faixa de Preço</label>
+            <span id="priceRangeValue" class="text-xs font-bold text-navy-900 bg-slate-100 px-2 py-0.5 rounded">Até R$ 50,00</span>
+          </div>
+          <input 
+            type="range" 
+            id="priceRange" 
+            min="2" 
+            max="100" 
+            step="1" 
+            value="50" 
+            oninput="handlePriceFilter(this.value)"
+            class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brandRed-600"
+          >
+          <div class="flex justify-between text-[11px] text-slate-400 mt-1 font-medium">
+            <span>R$ 2,00</span>
+            <span>R$ 100,00</span>
+          </div>
+        </div>
+
+        <!-- Category Checkboxes -->
+        <div class="border-t border-slate-100 pt-4">
+          <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">Categorias</h4>
+          <div class="space-y-2">
+            <label class="flex items-center gap-2.5 text-sm text-slate-600 hover:text-navy-900 cursor-pointer">
+              <input type="radio" name="sidebarCat" value="all" checked onclick="filterByCategory('all')" class="accent-brandRed-600 h-4 w-4">
+              <span>Todas as categorias</span>
+            </label>
+            <label class="flex items-center gap-2.5 text-sm text-slate-600 hover:text-navy-900 cursor-pointer">
+              <input type="radio" name="sidebarCat" value="Folhinhas" onclick="filterByCategory('Folhinhas')" class="accent-brandRed-600 h-4 w-4">
+              <span>Folhinhas & Agendas</span>
+            </label>
+            <label class="flex items-center gap-2.5 text-sm text-slate-600 hover:text-navy-900 cursor-pointer">
+              <input type="radio" name="sidebarCat" value="Brindes" onclick="filterByCategory('Brindes')" class="accent-brandRed-600 h-4 w-4">
+              <span>Brindes Diversos</span>
+            </label>
+            <label class="flex items-center gap-2.5 text-sm text-slate-600 hover:text-navy-900 cursor-pointer">
+              <input type="radio" name="sidebarCat" value="Sacolas" onclick="filterByCategory('Sacolas')" class="accent-brandRed-600 h-4 w-4">
+              <span>Sacolas Promocionais</span>
+            </label>
+            <label class="flex items-center gap-2.5 text-sm text-slate-600 hover:text-navy-900 cursor-pointer">
+              <input type="radio" name="sidebarCat" value="Caixas" onclick="filterByCategory('Caixas')" class="accent-brandRed-600 h-4 w-4">
+              <span>Caixas e Embalagens</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Banner Contact Box -->
+        <div class="border-t border-slate-100 pt-4">
+          <div class="bg-navy-950 text-white p-4 rounded-lg text-center space-y-2">
+            <i class="fa-solid fa-headset text-2xl text-brandRed-600 mb-1"></i>
+            <p class="text-xs font-bold uppercase tracking-wider">Precisa de orçamento em grande quantidade?</p>
+            <p class="text-[11px] text-slate-300">Fale diretamente com nossos vendedores no WhatsApp.</p>
+            <a href="https://wa.me/5511990053546" target="_blank" class="block w-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2 rounded-md transition-colors shadow">
+              <i class="fa-brands fa-whatsapp mr-1"></i> Solicitar Cotação
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 min-w-0">
+      
+      <!-- Top Status / Active Filters Header -->
+      <div class="flex flex-wrap items-center justify-between gap-4 mb-6 bg-white p-4 rounded-xl border border-slate-200/80 shadow-sm">
+        <div>
+          <h1 id="activeCategoryTitle" class="text-lg sm:text-xl font-extrabold text-navy-900">
+            Todos os Produtos
+          </h1>
+          <p id="productCountText" class="text-xs text-slate-500 mt-0.5">Exibindo 8 produtos</p>
+        </div>
+
+        <!-- Sorting dropdown -->
+        <div class="flex items-center gap-2">
+          <label for="sortSelect" class="text-xs font-semibold text-slate-500 whitespace-nowrap">Ordenar por:</label>
+          <select id="sortSelect" onchange="handleSort(this.value)" class="bg-slate-50 text-slate-700 text-xs font-semibold rounded-lg border border-slate-200 px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-navy-900">
+            <option value="featured">Destaques</option>
+            <option value="price-asc">Menor Preço</option>
+            <option value="price-desc">Maior Preço</option>
+            <option value="name-asc">Nome (A - Z)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- PRODUCTS GRID -->
+      <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+        <!-- Preenchido via JS -->
+      </div>
+
+      <!-- EMPTY STATE IF NO PRODUCTS MATCH -->
+      <div id="emptyState" class="hidden bg-white rounded-xl p-12 text-center border border-slate-200/80 my-8">
+        <div class="w-16 h-16 mx-auto mb-4 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 text-2xl">
+          <i class="fa-solid fa-box-open"></i>
+        </div>
+        <h3 class="text-base font-bold text-navy-900">Nenhum produto encontrado</h3>
+        <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Tente ajustar seus termos de pesquisa ou alterar o limite de preço no menu lateral.</p>
+        <button onclick="resetFilters()" class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-brandRed-600 text-white text-xs font-bold rounded-lg hover:bg-brandRed-700 transition-colors">
+          <i class="fa-solid fa-rotate-left"></i> Redefinir Filtros
+        </button>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- CART DRAWER / SLIDE-OVER -->
+  <div id="cartDrawer" class="fixed inset-0 z-50 overflow-hidden pointer-events-none transition-opacity duration-300 opacity-0">
+    <div id="cartBackdrop" onclick="toggleCartDrawer()" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"></div>
+    <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+      <div id="cartContent" class="w-screen max-w-md bg-white shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 pointer-events-auto">
+        
+        <div class="p-4 bg-navy-900 text-white flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-cart-shopping text-brandRed-600 text-lg"></i>
+            <h2 class="font-bold text-base">Seu Carrinho de Orçamento</h2>
+          </div>
+          <button onclick="toggleCartDrawer()" class="p-1 rounded hover:bg-navy-800 text-slate-300 hover:text-white transition-colors">
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+
+        <!-- ITEMS CONTAINER -->
+        <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-4 space-y-3 divide-y divide-slate-100">
+          <!-- Conteúdo inserido via JS com botões de quantidade e remoção -->
+        </div>
+
+        <div class="p-4 bg-slate-50 border-t border-slate-200 space-y-3">
+          <div class="flex items-center justify-between text-slate-600 text-sm">
+            <span>Subtotal Estimado</span>
+            <span id="cartSubtotal" class="font-bold text-navy-900 text-base">R$ 0,00</span>
+          </div>
+          <p class="text-[11px] text-slate-400 leading-tight">
+            * Valores sujeitos a confirmação para grandes volumes e personalizações de logotipo.
+          </p>
+          
+          <button onclick="finishOrderWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 transition-colors shadow-md">
+            <i class="fa-brands fa-whatsapp text-lg"></i>
+            Enviar Pedido via WhatsApp
+          </button>
+          
+          <button onclick="toggleCartDrawer()" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-2 rounded-lg text-xs transition-colors">
+            Continuar Comprando
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK VIEW PRODUCT MODAL -->
+  <div id="productModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-white rounded-2xl max-w-xl w-full overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 relative" id="modalContainer">
+      <button onclick="closeModal()" class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div id="modalBody" class="p-6">
+        <!-- Preenchido via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-navy-950 text-slate-400 text-xs border-t border-navy-900 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div>
+        <div class="flex items-center gap-2 mb-3">
+          <div class="bg-white px-2 py-1 rounded">
+            <span class="text-xs font-black tracking-widest text-navy-900">ARMAZÉM</span>
+            <span class="text-[10px] font-bold text-brandRed-600">BRINDES</span>
+          </div>
+        </div>
+        <p class="leading-relaxed text-slate-400">
+          Especialistas em brindes corporativos, folhinhas, sacolas, caixas personalizadas e itens de papelaria de alta qualidade para promover sua marca.
+        </p>
+      </div>
+
+      <div>
+        <h4 class="text-white font-bold text-sm mb-3">Atendimento ao Cliente</h4>
+        <ul class="space-y-2">
+          <li class="flex items-center gap-2">
+            <i class="fa-solid fa-envelope text-brandRed-600"></i>
+            <span>armazembrindes@uol.com.br</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <i class="fa-brands fa-whatsapp text-emerald-400"></i>
+            <span>(11) 99005-3546</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <i class="fa-solid fa-phone text-slate-400"></i>
+            <span>(11) 3104-6595</span>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-white font-bold text-sm mb-3">Categorias Principais</h4>
+        <div class="flex flex-wrap gap-2">
+          <span onclick="filterByCategory('Folhinhas')" class="cursor-pointer bg-navy-900 hover:bg-brandRed-600 text-slate-300 hover:text-white px-2.5 py-1 rounded transition-colors">Folhinhas</span>
+          <span onclick="filterByCategory('Brindes')" class="cursor-pointer bg-navy-900 hover:bg-brandRed-600 text-slate-300 hover:text-white px-2.5 py-1 rounded transition-colors">Brindes</span>
+          <span onclick="filterByCategory('Sacolas')" class="cursor-pointer bg-navy-900 hover:bg-brandRed-600 text-slate-300 hover:text-white px-2.5 py-1 rounded transition-colors">Sacolas</span>
+          <span onclick="filterByCategory('Caixas')" class="cursor-pointer bg-navy-900 hover:bg-brandRed-600 text-slate-300 hover:text-white px-2.5 py-1 rounded transition-colors">Caixas</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="border-t border-navy-900 py-4 text-center text-slate-500 text-[11px]">
+      &copy; 2026 Armazém Brindes. Todos os direitos reservados.
+    </div>
+  </footer>
+
+  <!-- FLOATING WHATSAPP BUTTON -->
+  <a href="https://wa.me/5511990053546" target="_blank" class="fixed bottom-6 right-6 z-30 bg-emerald-500 hover:bg-emerald-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all group" title="Falar no WhatsApp">
+    <i class="fa-brands fa-whatsapp text-3xl"></i>
+    <span class="absolute right-16 bg-navy-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-md">
+      Fale Conosco
+    </span>
+  </a>
+
+  <!-- JAVASCRIPT: LÓGICA DE PRODUTOS E CARRINHO COM REMOÇÃO -->
+  <script>
+    const PRODUCTS = [
+      {
+        id: 1,
+        name: "Caixinha pra perfume",
+        price: 14.00,
+        category: "Caixas",
+        image: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'><rect width='300' height='300' fill='%23fdfaf6'/><rect x='100' y='80' width='100' height='150' rx='6' fill='%23d9b48f' stroke='%23b89067' stroke-width='3'/><path d='M100 80 L150 50 L200 80' fill='%23e8c9a8' stroke='%23b89067' stroke-width='2'/><line x1='150' y1='50' x2='150' y2='230' stroke='%23be9871' stroke-dasharray='4'/><text x='150' y='160' font-family='sans-serif' font-size='12' fill='%23704f2e' text-anchor='middle'>10,5 cm x 7 cm</text></svg>",
+        description: "Caixa em papel Kraft resistente ideal para frascos de perfume, cosméticos e pequenos brindes de luxo."
+      },
+      {
+        id: 2,
+        name: "Capinha de RG",
+        price: 32.00,
+        category: "Brindes",
+        image: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'><rect width='300' height='300' fill='%23f4f8f5'/><rect x='80' y='50' width='140' height='200' rx='8' fill='%23e2f0e6' stroke='%232a7b4c' stroke-width='4'/><rect x='95' y='70' width='110' height='160' fill='%23ffffff' stroke='%2388c49d' stroke-width='2'/><circle cx='130' cy='110' r='20' fill='%232a7b4c'/><rect x='160' y='100' width='35' height='20' fill='%23d0e6d6'/><path d='M105 160 Q 150 140 195 160' stroke='%232a7b4c' stroke-width='2' fill='none'/><text x='150' y='210' font-family='sans-serif' font-size='10' font-weight='bold' fill='%232a7b4c' text-anchor='middle'>CARTEIRA DE IDENTIDADE</text></svg>",
+        description: "Protetor plástico transparente reforçado para Documento de Identidade (RG), prevenindo desgaste e rasgões."
+      },
+      {
+        id: 3,
+        name: "Caixa para cartão",
+        price: 4.00,
+        category: "Caixas",
+        image: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'><rect width='300' height='300' fill='%23f8fafc'/><polygon points='80,120 220,120 200,200 100,200' fill='%23e2e8f0' stroke='%2394a3b8' stroke-width='3'/><polygon points='80,120 220,120 210,100 90,100' fill='%23cbd5e1' stroke='%2394a3b8' stroke-width='2'/><rect x='110' y='110' width='80' height='10' fill='%2364748b' rx='2'/><path d='M100 200 L110 210 L190 210 L200 200' fill='%2394a3b8'/></svg>",
+        description: "Expositor e caixa organizadora em acrílico transparente para cartões de visita e pequenos displays de balcão."
+      },
+      {
+        id: 4,
+        name: "Agenda 2027",
+        price: 24.00,
+        category: "Folhinhas",
+        image: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'><rect width='300' height='300' fill='%23fafafa'/><rect x='90' y='50' width='130' height='190' rx='6' fill='%23111827'/><path d='M80 60 H 90 M80 80 H 90 M80 100 H 90 M80 120 H 90 M80 140 H 90 M80 160 H 90 M80 180 H 90 M80 200 H 90 M80 220 H 90' stroke='%239ca3af' stroke-width='5' stroke-linecap='round'/><text x='185' y='100' font-family='sans-serif' font-size='20' font-weight='bold' fill='%23d97706'>20</text><text x='185' y='122' font-family='sans-serif' font-size='20' font-weight='bold' fill='%23d97706'>27</text></svg>",
+        description: "Agenda executiva com capa dura preta, espiral reforçada e planejamento completo para o ano de 2027."
+      },
+      {
+        id: 5,
+        name: "Sacola Ecológica Kraft",
+        price: 6.50,
+        category: "Sacolas",
+        image: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'><rect width='300' height='300' fill='%23fffdfa'/><path d='M100 120 L200 120 L190 240 L110 240 Z' fill='%23d9b48f' stroke='%23b89067' stroke-width='3'/><path d='M130 120 C130 90, 170 90, 170 120' fill='none' stroke='%23885d35' stroke-width='4' stroke-linecap='round'/><text x='150' y='180' font-family='sans-serif' font-size='11' font-weight='bold' fill='%23704f2e' text-anchor='middle'>ECO BAG</text></svg>",
+        description: "Sacola de papel kraft resistente com alça torcida. Perfeita para lojas e eventos corporativos."
+      },
+      {
+        id: 6,
+        name: "Folhinha Comercial Parede",
+        price: 8.90,
+        category: "Folhinhas",
+        image: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'><rect width='300' height='300' fill='%23f8fafc'/><rect x='80' y='40' width='140' height='210' fill='%23ffffff' stroke='%23cbd5e1' stroke-width='2'/><rect x='80' y='40' width='140' height='70' fill='%231e2d4a'/><circle cx='150' cy='55' r='5' fill='%23ffffff'/><text x='150' y='85' font-family='sans-serif' font-size='12' font-weight='bold' fill='%23ffffff' text-anchor='middle'>SUA MARCA AQUI</text><rect x='90' y='120' width='120' height='110' fill='%23f1f5f9'/><text x='150' y='180' font-family='sans-serif' font-size='16' font-weight='bold' fill='%23bd2b2b' text-anchor='middle'>CALENDÁRIO</text></svg>",
+        description: "Calendário de parede com bloco diário destacável e espaço para personalização de marca da sua empresa."
+      },
+      {
+        id: 7,
+        name: "Caneta Metal Premium",
+        price: 12.50,
+        category: "Brindes",
+        image: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'><rect width='300' height='300' fill='%23ffffff'/><rect x='60' y='145' width='180' height='10' rx='5' fill='%23334155'/><path d='M240 145 L260 150 L240 155 Z' fill='%2394a3b8'/><rect x='80' y='143' width='15' height='14' fill='%23cbd5e1'/><line x1='80' y1='140' x2='110' y2='140' stroke='%2364748b' stroke-width='2'/></svg>",
+        description: "Caneta esferográfica em alumínio com acabamento fosco e clipe metálico. Acompanha carga azul."
+      },
+      {
+        id: 8,
+        name: "Sacola TNT Personalizada",
+        price: 4.80,
+        category: "Sacolas",
+        image: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'><rect width='300' height='300' fill='%23f8fafc'/><rect x='90' y='110' width='120' height='140' rx='4' fill='%23bd2b2b'/><path d='M120 110 V90 C120 80, 180 80, 180 90 V110' fill='none' stroke='%23881b1b' stroke-width='5'/><circle cx='150' cy='175' r='25' fill='%23ffffff' opacity='0.2'/></svg>",
+        description: "Sacola em tecido não tecido (TNT) com selagem ultrassônica. Alta durabilidade e excelente visibilidade."
+      }
+    ];
+
+    let state = {
+      currentCategory: 'all',
+      searchQuery: '',
+      maxPrice: 50,
+      sortBy: 'featured',
+      cart: []
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderProducts();
+      updateCartBadge();
+    });
+
+    function renderProducts() {
+      const grid = document.getElementById('productsGrid');
+      const emptyState = document.getElementById('emptyState');
+      const countText = document.getElementById('productCountText');
+
+      let filtered = PRODUCTS.filter(p => {
+        const matchesCategory = state.currentCategory === 'all' || p.category === state.currentCategory;
+        const matchesSearch = p.name.toLowerCase().includes(state.searchQuery.toLowerCase()) || 
+                              p.description.toLowerCase().includes(state.searchQuery.toLowerCase());
+        const matchesPrice = p.price <= state.maxPrice;
+        return matchesCategory && matchesSearch && matchesPrice;
+      });
+
+      if (state.sortBy === 'price-asc') {
+        filtered.sort((a, b) => a.price - b.price);
+      } else if (state.sortBy === 'price-desc') {
+        filtered.sort((a, b) => b.price - a.price);
+      } else if (state.sortBy === 'name-asc') {
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
+      }
+
+      countText.innerText = `Exibindo ${filtered.length} produto(s)`;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+
+      grid.innerHTML = filtered.map(product => `
+        <div class="product-card bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between group relative">
+          <div class="relative bg-slate-50 rounded-xl p-4 mb-3 overflow-hidden flex items-center justify-center h-48 cursor-pointer" onclick="openModal(${product.id})">
+            <img src="${product.image}" alt="${product.name}" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"/>
+            <span class="absolute top-2 left-2 bg-navy-900/80 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+              ${product.category}
+            </span>
+          </div>
+
+          <div>
+            <h3 class="font-medium text-slate-800 text-sm mb-1 line-clamp-1 group-hover:text-brandRed-600 transition-colors cursor-pointer" onclick="openModal(${product.id})">
+              ${product.name}
+            </h3>
+            <p class="text-navy-900 font-extrabold text-base mb-4">
+              R$ ${product.price.toFixed(2).replace('.', ',')}
+            </p>
+          </div>
+
+          <div class="flex items-center gap-2 pt-2 border-t border-slate-100">
+            <button onclick="addToCart(${product.id})" class="w-full bg-brandRed-600 hover:bg-brandRed-700 text-white font-bold py-2 px-3 rounded-lg text-xs transition-colors flex items-center justify-center gap-2">
+              <i class="fa-solid fa-plus"></i> Adicionar
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterByCategory(cat) {
+      state.currentCategory = cat;
+      document.getElementById('activeCategoryTitle').innerText = cat === 'all' ? 'Todos os Produtos' : cat;
+      renderProducts();
+    }
+
+    function handleSearch() {
+      state.searchQuery = document.getElementById('searchInput').value;
+      renderProducts();
+    }
+
+    function handlePriceFilter(val) {
+      state.maxPrice = parseFloat(val);
+      document.getElementById('priceRangeValue').innerText = `Até R$ ${state.maxPrice.toFixed(2).replace('.', ',')}`;
+      renderProducts();
+    }
+
+    function handleSort(val) {
+      state.sortBy = val;
+      renderProducts();
+    }
+
+    function resetFilters() {
+      state.currentCategory = 'all';
+      state.searchQuery = '';
+      state.maxPrice = 100;
+      document.getElementById('searchInput').value = '';
+      document.getElementById('priceRange').value = 100;
+      document.getElementById('priceRangeValue').innerText = 'Até R$ 100,00';
+      renderProducts();
+    }
+
+    function addToCart(id) {
+      const item = state.cart.find(i => i.id === id);
+      if (item) {
+        item.qty++;
+      } else {
+        const prod = PRODUCTS.find(p => p.id === id);
+        state.cart.push({ ...prod, qty: 1 });
+      }
+      updateCartBadge();
+      renderCart();
+    }
+
+    function updateQuantity(id, delta) {
+      const item = state.cart.find(i => i.id === id);
+      if (item) {
+        item.qty += delta;
+        if (item.qty <= 0) {
+          removeFromCart(id);
+          return;
+        }
+      }
+      updateCartBadge();
+      renderCart();
+    }
+
+    function removeFromCart(id) {
+      state.cart = state.cart.filter(i => i.id !== id);
+      updateCartBadge();
+      renderCart();
+    }
+
+    function updateCartBadge() {
+      const badge = document.getElementById('cartBadge');
+      const totalQty = state.cart.reduce((acc, item) => acc + item.qty, 0);
+      badge.innerText = totalQty;
+      if (totalQty > 0) {
+        badge.classList.remove('scale-0');
+      } else {
+        badge.classList.add('scale-0');
+      }
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cartItemsContainer');
+      const subtotalEl = document.getElementById('cartSubtotal');
+      
+      if (state.cart.length === 0) {
+        container.innerHTML = `<div class="text-center py-8 text-slate-400 text-sm">Seu carrinho está vazio.</div>`;
+        subtotalEl.innerText = 'R$ 0,00';
+        return;
+      }
+
+      let subtotal = 0;
+      container.innerHTML = state.cart.map(item => {
+        subtotal += item.price * item.qty;
+        return `
+          <div class="flex items-center justify-between gap-3 pt-3">
+            <img src="${item.image}" class="w-12 h-12 object-contain bg-slate-50 rounded-md border p-1" />
+            <div class="flex-1 min-w-0">
+              <h4 class="text-xs font-bold text-slate-800 truncate">${item.name}</h4>
+              <p class="text-xs text-slate-500">R$ ${item.price.toFixed(2).replace('.', ',')}</p>
+            </div>
+            
+            <!-- CONTROLES DE QUANTIDADE -->
+            <div class="flex items-center gap-1.5 bg-slate-100 rounded-lg p-1">
+              <button onclick="updateQuantity(${item.id}, -1)" class="w-6 h-6 flex items-center justify-center text-slate-600 hover:bg-white rounded transition-colors text-xs font-bold">
+                <i class="fa-solid fa-minus"></i>
+              </button>
+              <span class="text-xs font-bold text-navy-900 px-1">${item.qty}</span>
+              <button onclick="updateQuantity(${item.id}, 1)" class="w-6 h-6 flex items-center justify-center text-slate-600 hover:bg-white rounded transition-colors text-xs font-bold">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
+
+            <!-- BOTÃO DE REMOVER ITEM -->
+            <button onclick="removeFromCart(${item.id})" class="p-1.5 text-slate-400 hover:text-brandRed-600 transition-colors" title="Remover item">
+              <i class="fa-solid fa-trash-can text-sm"></i>
+            </button>
+          </div>
+        `;
+      }).join('');
+
+      subtotalEl.innerText = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+    }
+
+    function toggleCartDrawer() {
+      const drawer = document.getElementById('cartDrawer');
+      const content = document.getElementById('cartContent');
+      if (drawer.classList.contains('opacity-0')) {
+        drawer.classList.remove('opacity-0', 'pointer-events-none');
+        content.classList.remove('translate-x-full');
+        renderCart();
+      } else {
+        drawer.classList.add('opacity-0', 'pointer-events-none');
+        content.classList.add('translate-x-full');
+      }
+    }
+
+    function finishOrderWhatsApp() {
+      if (state.cart.length === 0) return alert("Seu carrinho está vazio!");
+      let text = "Olá! Gostaria de um orçamento para os seguintes itens:\n\n";
+      state.cart.forEach(i => {
+        text += `- ${i.name} (${i.qty}x) = R$ ${(i.price * i.qty).toFixed(2).replace('.', ',')}\n`;
+      });
+      window.open(`https://wa.me/5511990053546?text=${encodeURIComponent(text)}`, '_blank');
+    }
+
+    function openModal(id) {
+      const p = PRODUCTS.find(prod => prod.id === id);
+      const modal = document.getElementById('productModal');
+      const body = document.getElementById('modalBody');
+      
+      body.innerHTML = `
+        <div class="text-center">
+          <img src="${p.image}" class="w-48 h-48 object-contain mx-auto mb-4 bg-slate-50 p-2 rounded-xl" />
+          <h2 class="font-bold text-slate-800 text-lg mb-2">${p.name}</h2>
+          <p class="text-xs text-slate-500 mb-4">${p.description}</p>
+          <p class="text-xl font-black text-navy-900 mb-4">R$ ${p.price.toFixed(2).replace('.', ',')}</p>
+          <button onclick="addToCart(${p.id}); closeModal();" class="w-full bg-brandRed-600 hover:bg-brandRed-700 text-white font-bold py-2 rounded-lg text-sm transition-colors">
+            Adicionar ao Carrinho
+          </button>
+        </div>
+      `;
+      
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('productModal');
+      modal.classList.add('opacity-0', 'pointer-events-none');
+    }
+  </script>
+</body>
+</html>
